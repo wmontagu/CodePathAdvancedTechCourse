@@ -10,27 +10,56 @@ def print_linked_list(head):
         print(current.value, end=" -> " if current.next else "\n")
         current = current.next
 
-def edit_dna_sequence(dna_strand, m, n):
-    m1 = 0
-    n1 = 0
-    marker = None
-    head = dna_strand
-    while dna_strand:
-        if m1 < m:
-            m1 += 1
-        elif m1 == m and n1 == 0:
-            marker = dna_strand
-        if n1 < n:
-            n += 1
-        elif n1 == n:
-            n1 = 0
-            m1 = 0
-            marker.next = dna_strand.next
-            dna_strand.next = None
-        dna_strand = dna_strand.next
-    return head
+# Session 1, Advanced set 1
+# Problem 1: Selective DNA Deletion
+# keep m nodes, skip n nodes, repeat
+# edge cases
+# reaching end of list while skipping nodes
+def edit_dna_sequence(dna_strand: Node, m: int, n: int) -> Node:
+    
+    # when m == 0, keep none
+    if m == 0:
+        return None
+    # traverse list with current
+    current = dna_strand
+    while current:
+        for _ in range(m-1): # keep node
+            if not current:
+                return dna_strand
+            current = current.next
+        # node before skip
+        before_skip = current
+        current = current.next
+        before_skip.next = None
+        for _ in range(n): # skip n nodes
+            if not current:
+                return dna_strand
+            current = current.next
+        # set the .next of the node before skip
+        before_skip.next = current
+    return dna_strand # return head
 
 
-dna_strand = Node(1, Node(2, Node(3, Node(4, Node(5, Node(6, Node(7, Node(8, Node(9, Node(10, Node(11, Node(12, Node(13)))))))))))))
-
-print_linked_list(edit_dna_sequence(dna_strand, 2, 3))
+def cycle_length(protein: Node) -> list[str]:
+    # use some kind of hashing to store the Node object
+    seen: set[Node] = set()
+    curr = protein
+    # linked list traversal
+    while curr not in seen:
+        # store the nodes we've seen in a set
+        if not curr:
+            # no cycle
+            return []
+        seen.add(curr)
+        curr = curr.next
+    
+    # curr is at the start of the cycle
+    start_of_cycle = curr
+    res: list[str] = [curr.value]
+    curr = curr.next
+    # traverse again   goes from start -> break when at start again
+    while curr is not start_of_cycle:
+        # store the nodes we've seen in a set
+        res.append(curr.value)
+        curr = curr.next
+    return res
