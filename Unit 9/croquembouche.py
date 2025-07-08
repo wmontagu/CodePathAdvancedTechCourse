@@ -130,3 +130,23 @@ flavors = ["Chocolate", "Vanilla", "Lemon", "Strawberry", None, "Hazelnut", "Red
 cupcakes = build_tree(flavors)
 print(zigzag_icing_order(cupcakes))
 
+def larger_order_tree(orders):
+    # Do DFS inorder search
+    # Starting with right and then going left
+    # At each node, 
+
+    if not orders:
+        return None
+    value = [0]
+    
+    def helper(node):
+        if not node:
+            return
+        
+        helper(node.right)
+        value[0] += node.val
+        node.val = value[0]
+        helper(node.left)
+
+    helper(orders)
+    return orders
